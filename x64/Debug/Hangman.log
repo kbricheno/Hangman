@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(55,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(51,1): error C4716: 'input_is_valid': must return a value
