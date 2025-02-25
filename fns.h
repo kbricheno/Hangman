@@ -1,12 +1,20 @@
 #include <iostream>
 #include <vector>
 
-void choose_solution(const std::vector<std::string>&, std::string&);
+std::string choose_solution(const std::vector<std::string>& options);
 
-void find_unique_chars(const std::string&, std::vector<char>&);
+void find_unique_chars(const std::string& word, std::vector<char>& unique_chars);
 
-int won_or_lost(const std::vector<char>&, const std::vector<char>&, const int&);
+int won_or_lost(const std::vector<char>& guesses, const std::vector<char>& answers, const int& remaining_guesses);
 
-bool valid_input(const std::string&);
+std::string request_input();
 
-bool previous_guess(const std::string&, const std::vector<char>&);
+bool valid_input(const std::string& input);
+
+bool input_in_list(const std::string& input, const std::vector<std::string>& list);
+
+bool previous_guess(const std::string& input, const std::vector<char>& guesses);
+
+std::string create_spaces(const std::string& solution, const std::vector<char>& correct_guesses);
+
+bool check_guess(const char& guess, const std::string& solution);
