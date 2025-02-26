@@ -1,23 +1,47 @@
-#include <iostream>
+﻿#include <iostream>
 #include <vector>
 #include "fns.h"
 #include <regex>
+#include <cmath>
 
-std::vector<std::string> fun_words = { "stupid", "idiot", "dumbass", "nincompoop", "dingus", "genius", "moron", "silly billy", "numbnuts"};
+// add more words to choose from here
+std::vector<std::string> fun_words = { "stupid", "idiot", "dumbass", "doofus", "nincompoop", "dingus", "genius", "moron", "silly billy", "numbnuts" };
 
-int max_guesses = 6;
+// when asked to play again, user must enter a value that exactly matches one of these strings
+std::vector<std::string> affirmatives = { "y", "yes", "ye", "confirm", "accept" };
+std::vector<std::string> negatives = { "n", "no", "nah", "cancel", "negative" };
 
-int main() 
+// number of guesses is determined by the length of this vector; break the man up into smaller pieces to add more guesses
+std::vector<std::string> men = {
+"_____\n|   |\n|   \n|   \n|  \n|____\n",
+"_____\n|   |\n|   O\n|   \n|  \n|____\n",
+"_____\n|   |\n|   O\n|   |\n|  \n|____\n",
+"_____\n|   |\n|   O\n|  /|\n|  \n|____\n",
+"_____\n|   |\n|   O\n|  /|\\\n|  \n|____\n",
+"_____\n|   |\n|   O\n|  /|\\\n|  /\n|____\n",
+"_____\n|   |\n|   O\n|  /|\\\n|  /\\\n|____\n" };
+
+/*
+_____
+|   |
+|   O
+|  /|\
+|  /\
+|____
+
+*/
+
+int main()
 {
 	bool playing = true;
 	while (playing)
 	{
+		/////////////////////////////////////////////////////////////////////////////////// set-up
 		// generate random seed (once each time the program runs)
 		srand(time(0));
 
-		// decide word
-		// TODO: import from text doc
 		// choose & set solution from list of word options
+		// TODO: import from text doc
 		std::string current_solution = choose_solution(fun_words);
 
 		// find unique characters in solution
@@ -25,98 +49,111 @@ int main()
 		find_unique_chars(current_solution, unique_chars_in_solution);
 
 		// prepare guess variables
-		int guesses_remaining = max_guesses;
 		std::vector<char> guesses;
 		std::vector<char> correct_guesses;
 
-		// draw spaces, hanging pole
-		std::string spaces = create_spaces(current_solution, correct_guesses);
-		std::cout << spaces << "\n";
+		// draw spaces, pole
+		draw_man(men, correct_guesses.size(), guesses.size());
+		draw_spaces(current_solution, correct_guesses);
 
 		bool game_over = false;
-
-		while (!game_over)
+		while (!game_over) ////////////////////////////////////////////////////////////// game
 		{
-			std::cout << guesses_remaining << " guesses remaining.\n";
+			std::cout << men.size() - 1 - (guesses.size() - correct_guesses.size()) << " guess(es) remaining.\n";
 
-			// request guess input from user
-			std::string new_guess = request_input();
+			// prepare to receive a guess from the user
+			std::string new_guess = "";
+			std::cout << "Guess a letter: ";
 
-			// validate user input
-			while (!valid_input(new_guess) || previous_guess(new_guess, guesses))
+			// input validation
+			bool validated = false;
+			while (!validated)
 			{
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				std::cin >> new_guess;
-				std::cout << "\n";
+				// receive input
+				new_guess = request_input();
+
+				// check if user straight up nailed it (guessed correct word)
+				if (correct_answer(new_guess, current_solution)) validated = true;
+
+				// otherwise input must be a) a letter, and b) not a letter previously guessed
+				else if (!valid_input(new_guess)) clear_input();
+				else if (previous_guess(new_guess, guesses)) clear_input();
+				else validated = true;
 			}
 
-			// check if guess is correct
-			if (check_guess(new_guess[0], current_solution)) 
+			// check correct answer again outside validation loop so we can break out of the game loop
+			if (correct_answer(new_guess, current_solution))
 			{
-				std::cout << "Nice!\n";
+				draw_man(men, correct_guesses.size(), guesses.size());
+				draw_spaces(current_solution, unique_chars_in_solution);
+				std::cout << "You nailed it!\n";
+				game_over = true;
+				break;
+			}
+			// otherwise check if guess is correct
+			else if (check_guess(new_guess[0], unique_chars_in_solution))
+			{
+				std::cout << "\n\nNice!\n";
 				correct_guesses.push_back(new_guess[0]);
 			}
-
 			else
 			{
-				std::cout << "Incorrect!\n";
-				guesses_remaining--;
+				std::cout << "\n\nIncorrect!\n";
 			}
 
+			// whether or not the guess is correct, add it to this vector to keep track of all guesses
 			guesses.push_back(new_guess[0]);
 
-			std::string spaces = create_spaces(current_solution, correct_guesses);
-			std::cout << spaces << "\n";
+			// draw the updated man and spaces
+			draw_man(men, correct_guesses.size(), guesses.size());
+			draw_spaces(current_solution, correct_guesses);
 
-			// guess incorrect: guesses_remaining--; draw next piece of Man
-
-			// break
-			if (guesses_remaining <= 0)
+			// check to see if the player won or lost
+			int win_state = check_winstate(men.size() - 1, correct_guesses.size(), guesses.size(), unique_chars_in_solution.size());
+			switch (win_state)
 			{
-				std::cout << "\nGame over!\n";
-				game_over = true;
-				break;
-			}
-			if (correct_guesses.size() >= unique_chars_in_solution.size())
-			{
-				std::cout << "\nYou win!\n";
-				game_over = true;
-				break;
+				case 0: // keep playing; continue the loop
+					continue;
+				case 1: // win state
+					std::cout << "You win!\n";
+					game_over = true;
+					break;
+				case 2: // lose state
+					std::cout << "Game over! The word was '" << current_solution << "'.\n";
+					game_over = true;
+					break;
+				default:
+					continue;
 			}
 		}
 
-		std::vector<std::string> affirmatives = { "y", "yes", "ye", "confirm", "accept" };
-		std::vector<std::string> negatives = { "n", "no", "nah", "cancel", "negative" };
+		/////////////////////////////////////////////////////////////////////////////////// play again?
+		
 		std::string play_again_input = "";
-		bool decided = false;
-
 		std::cout << "Would you like to play again?\n";
 
+		bool decided = false;
 		while (!decided) 
 		{
-			std::cin >> play_again_input;
+			// receive input
+			play_again_input = request_input();
 
-			while (!valid_input(play_again_input))
-			{
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				std::cin >> play_again_input;
-				std::cout << "\n\n";
-			}
+			// check if input is found in list of negatives; break out of both loops
 			if (input_in_list(play_again_input, negatives))
 			{
 				playing = false;
 				decided = true;
 			}
-			else if (input_in_list(play_again_input, affirmatives))
-			{
+			// check if input is found in list of affirmatives; break out of deciding loop
+			else if (input_in_list(play_again_input, affirmatives)) 
+			{ 
 				playing = true;
-				decided = true;
+				decided = true; 
 			}
-			else 
+			else // input was not valid, try again
 			{
-				std::cout << "Please enter yes or no.\n";
+				std::cout << "Please enter 'yes' or 'no'.\n";
+				clear_input();
 			}
 		}
 	}

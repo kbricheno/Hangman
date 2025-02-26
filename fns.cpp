@@ -26,6 +26,11 @@ void find_unique_chars(const std::string& word, std::vector<char>& unique_chars)
 				is_unique_char = false;
 				break;
 			}
+			if (word[i] == ' ') // don't save spaces as unique/guessable chars
+			{
+				is_unique_char = false;
+				break;
+			}
 		}
 
 		if (is_unique_char) unique_chars.push_back(word[i]);
@@ -36,30 +41,22 @@ void find_unique_chars(const std::string& word, std::vector<char>& unique_chars)
 std::string request_input() 
 {
 	std::string guess = "";
-	std::cout << "Guess a letter: ";
 	std::cin >> guess;
 	std::cout << "\n";
 
 	return guess;
 }
 
-int won_or_lost(const std::vector<char>& guesses, const std::vector<char>& answers, const int& remaining_guesses)
+void clear_input() 
 {
-	// check the game state -- has the player won or lost?
-	if (remaining_guesses <= 0) return 1; // lost
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
 
-	int correct_guesses = 0;
-
-	for (char a : answers)
-	{
-		for (char g : guesses)
-		{
-			if (g == a) correct_guesses++;
-		}
-	}
-
-	if (correct_guesses >= answers.size()) return 2; // won
-	else return 0; // can continue
+bool correct_answer(const std::string& input, const std::string solution)
+{
+	if (input == solution) return true;
+	else return false;
 }
 
 bool valid_input(const std::string& input) 
@@ -73,15 +70,6 @@ bool valid_input(const std::string& input)
 		return false;
 	}
 	else return true;
-}
-
-bool input_in_list(const std::string& input, const std::vector<std::string>& list) 
-{
-	for (std::string item : list) 
-	{
-		if (input == item) return true;
-	}
-	return false;
 }
 
 bool previous_guess(const std::string& input, const std::vector<char>& guesses) 
@@ -99,7 +87,16 @@ bool previous_guess(const std::string& input, const std::vector<char>& guesses)
 	return false;
 }
 
-std::string create_spaces(const std::string& solution, const std::vector<char>& correct_guesses) 
+bool check_guess(const char& guess, std::vector<char>& unique_chars)
+{
+	for (int i = 0; i < unique_chars.size(); i++)
+	{
+		if (guess == unique_chars[i]) return true;
+	}
+	return false;
+}
+
+void draw_spaces(const std::string& solution, const std::vector<char>& correct_guesses) 
 {
 	std::string spaces;
 	for (char s : solution)
@@ -120,14 +117,27 @@ std::string create_spaces(const std::string& solution, const std::vector<char>& 
 		}
 		spaces.append(new_space);
 	}
-	return spaces;
+	std::cout << spaces << "\n\n";
 }
 
-bool check_guess(const char& guess, const std::string& solution) 
+void draw_man(const std::vector<std::string>& men, const int correct_guesses, const int total_guesses)
 {
-	for (int i = 0; i < solution.size(); i++)
+	// print string in men vector equal to number of incorrect guesses so far, clamped to max size of men vector
+	std::cout << men[abs(correct_guesses - total_guesses > (int)men.size() - 1 ? (int)men.size() - 1 : correct_guesses - total_guesses)] << "\n";
+}
+
+int check_winstate(const int max_guesses, const int correct_guesses, const int total_guesses, const int answers)
+{
+	if (correct_guesses >= answers) return 1; // won
+	if (max_guesses - (total_guesses - correct_guesses) <= 0) return 2; // lost
+	return 0; // keep playing
+}
+
+bool input_in_list(const std::string& input, const std::vector<std::string>& list) 
+{
+	for (std::string item : list) 
 	{
-		if (guess == solution[i]) return true;
+		if (input == item) return true;
 	}
 	return false;
 }
