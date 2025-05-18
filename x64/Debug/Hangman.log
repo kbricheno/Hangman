@@ -1,3 +1,15 @@
-﻿  main.cpp
-C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(55,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(51,1): error C4716: 'input_is_valid': must return a value
+﻿  fns.cpp
+  main.cpp
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(41,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(56,53): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(56,37): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(87,55): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(87,39): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(108,54): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(108,38): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(112,120): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(112,87): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(112,71): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+C:\Users\necro\source\repos\Hangman\Hangman\main.cpp(112,46): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
+  Generating Code...
+  Hangman.vcxproj -> C:\Users\necro\source\repos\Hangman\x64\Debug\Hangman.exe

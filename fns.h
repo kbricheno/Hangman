@@ -32,4 +32,3 @@ int check_winstate(const int max_guesses, const int correct_guesses, const int t
 
 // Check whether the input appears exactly within a list of strings.
 bool input_in_list(const std::string& input, const std::vector<std::string>& list);
-

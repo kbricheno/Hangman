@@ -5,7 +5,7 @@
 #include <cmath>
 
 // add more words to choose from here
-std::vector<std::string> fun_words = { "stupid", "idiot", "dumbass", "doofus", "nincompoop", "dingus", "genius", "moron", "silly billy", "numbnuts" };
+std::vector<std::string> cool_animals = { "tyrannosaurus rex", "diplodocus longus", "ankylosaurus magniventris", "spinosaurus aegyptiacus", "triceratops horridus", "pachycephalosaurus wyomingensis", "otodus megalodon", "dunkleosteus terrelli", "carnotaurus sastrei", "quetzalcoatlus northropi" };
 
 // when asked to play again, user must enter a value that exactly matches one of these strings
 std::vector<std::string> affirmatives = { "y", "yes", "ye", "confirm", "accept" };
@@ -42,7 +42,7 @@ int main()
 
 		// choose & set solution from list of word options
 		// TODO: import from text doc
-		std::string current_solution = choose_solution(fun_words);
+		std::string current_solution = choose_solution(cool_animals);
 
 		// find unique characters in solution
 		std::vector<char> unique_chars_in_solution;
